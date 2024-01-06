@@ -15,7 +15,12 @@ export default defineConfig({
   },
   plugins: [
     dts({
-      exclude: ["./vite.config.ts", "./.eslintrc.cjs", "./jest.config.cjs"],
+      exclude: [
+        "./vite.config.ts",
+        "./.eslintrc.cjs",
+        "./jest.config.cjs",
+        "**/*.test.ts",
+      ],
     }),
   ],
 });
