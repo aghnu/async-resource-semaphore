@@ -9,8 +9,8 @@ export default defineConfig({
     emptyOutDir: true,
     lib: {
       entry: resolve(__dirname, "src/index.ts"),
-      name: "async-semaphore",
-      fileName: "async-semaphore",
+      name: "async-resource-semaphore",
+      fileName: "async-resource-semaphore",
     },
   },
   plugins: [

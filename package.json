@@ -1,18 +1,18 @@
 {
   "name": "async-resource-semaphore",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": {
     "name": "Gengyuan Huang"
   },
   "description": "an implementation of semaphore for javascript",
   "license": "MIT",
-  "homepage": "https://github.com/aghnu/async-semaphore",
+  "homepage": "https://github.com/aghnu/async-resource-semaphore",
   "repository": {
     "type": "git",
-    "url": "https://github.com/aghnu/async-semaphore.git"
+    "url": "https://github.com/aghnu/async-resource-semaphore.git"
   },
   "bugs": {
-    "url": "https://github.com/aghnu/async-semaphore/issues"
+    "url": "https://github.com/aghnu/async-resource-semaphore/issues"
   },
   "keywords": [
     "semaphore",
@@ -22,13 +22,14 @@
     "event-loop"
   ],
   "type": "module",
-  "main": "./dist/async-semaphore.umd.cjs",
-  "module": "./dist/async-semaphore.js",
+  "main": "./dist/async-resource-semaphore.umd.cjs",
+  "module": "./dist/async-resource-semaphore.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/async-semaphore.js",
-      "require": "./dist/async-semaphore.umd.cjs"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/async-resource-semaphore.js",
+      "require": "./dist/async-resource-semaphore.umd.cjs"
     }
   },
   "files": [
