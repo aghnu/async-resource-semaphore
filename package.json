@@ -1,9 +1,26 @@
 {
-  "name": "async-semaphore",
+  "name": "async-resource-semaphore",
   "version": "0.0.1",
   "author": {
     "name": "Gengyuan Huang"
   },
+  "description": "an implementation of semaphore for javascript",
+  "license": "Apache License 2.0",
+  "homepage": "https://github.com/aghnu/async-semaphore",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aghnu/async-semaphore.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aghnu/async-semaphore/issues"
+  },
+  "keywords": [
+    "semaphore",
+    "async",
+    "axios",
+    "critical-section",
+    "event-loop"
+  ],
   "type": "module",
   "main": "./dist/async-semaphore.umd.cjs",
   "module": "./dist/async-semaphore.js",
