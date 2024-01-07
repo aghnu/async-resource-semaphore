@@ -5,7 +5,7 @@
     "name": "Gengyuan Huang"
   },
   "description": "an implementation of semaphore for javascript",
-  "license": "Apache License 2.0",
+  "license": "MIT",
   "homepage": "https://github.com/aghnu/async-semaphore",
   "repository": {
     "type": "git",
