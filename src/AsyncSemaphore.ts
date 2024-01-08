@@ -1,3 +1,5 @@
+export const DEFAULT_IDENTIFIER: string = "semaphore-default" as const;
+
 export class AsyncSemaphore {
   private readonly limits = new Map<string, number>();
   private readonly limitDefault: number;
@@ -34,7 +36,7 @@ export class AsyncSemaphore {
     this.limits.set(identifier, Math.min(limit + 1, this.limitDefault));
   }
 
-  public async take(identifier: string): Promise<void> {
+  public async take(identifier = DEFAULT_IDENTIFIER): Promise<void> {
     await new Promise<void>((resolve) => {
       const checking = (): void => {
         if (this.getLimit(identifier) > 0) {
@@ -48,13 +50,13 @@ export class AsyncSemaphore {
     });
   }
 
-  public give(identifier: string): void {
+  public give(identifier = DEFAULT_IDENTIFIER): void {
     this.increaseLimit(identifier);
   }
 
   public async run<R>(
     criticalSection: () => Promise<R>,
-    identifier = "default",
+    identifier = DEFAULT_IDENTIFIER,
   ): Promise<R> {
     await this.take(identifier);
     try {
