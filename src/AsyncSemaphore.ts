@@ -2,8 +2,8 @@ export class AsyncSemaphore {
   private readonly limits = new Map<string, number>();
   private readonly limitDefault: number;
 
-  constructor(limit = 1) {
-    this.limitDefault = limit;
+  constructor(maxResourceLimit = 1) {
+    this.limitDefault = maxResourceLimit;
   }
 
   private getLimit(identifier: string): number {
@@ -34,7 +34,7 @@ export class AsyncSemaphore {
     this.limits.set(identifier, Math.min(limit + 1, this.limitDefault));
   }
 
-  private async takeResource(identifier: string): Promise<void> {
+  public async take(identifier: string): Promise<void> {
     await new Promise<void>((resolve) => {
       const checking = (): void => {
         if (this.getLimit(identifier) > 0) {
@@ -48,20 +48,20 @@ export class AsyncSemaphore {
     });
   }
 
-  private returnResource(identifier: string): void {
+  public give(identifier: string): void {
     this.increaseLimit(identifier);
   }
 
   public async run<R>(
-    asyncFunc: () => Promise<R>,
+    criticalSection: () => Promise<R>,
     identifier = "default",
   ): Promise<R> {
-    await this.takeResource(identifier);
+    await this.take(identifier);
     try {
-      const result = await asyncFunc();
+      const result = await criticalSection();
       return result;
     } finally {
-      this.returnResource(identifier);
+      this.give(identifier);
     }
   }
 }
