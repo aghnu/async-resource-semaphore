@@ -41,8 +41,10 @@ This lightweight JavaScript library aims to resolve this issue by creating a cri
 
 ```typescript
 class Semaphore {
-  constructor(maxResourceLimit: number): Semaphore
-  run<T>: (criticalSection: () => Promise<T>, identifier: string): Promise<T>
+  constructor(maxResourceLimit: number): Semaphore;
+  run<T>: (criticalSection: () => Promise<T>, identifier?: string): Promise<T>;
+  take: (identifier?: string): Promise<void>;
+  give: (identifier?: string): void;
 }
 
 
@@ -62,6 +64,45 @@ const criticalSection = async () => {
 };
 void semaphore.run(criticalSection);
 void semaphore.run(criticalSection); // this event will not excute untill the first one exit
+```
+
+You can use semaphore's take and give
+
+```typescript
+import { AsyncSemaphore } from "async-resource-semaphore";
+
+const semaphore = new AsyncSemaphore(); // defaut resource counter is 1
+const criticalSection = async () => {
+  await semaphore.take();
+  // criticial section
+  // ...
+  semaphore.give();
+};
+
+void criticalSection();
+void criticalSection();
+```
+
+When use semaphore's take and give, it is recommended that you use try and catch to handle error inside the critical section to alway return the resource.
+
+If you use semaphore.run() then you dont need to worry about it. This is why run is prefered.
+
+```typescript
+// remember to catch error inbetween take and give so it wont block when there is failure
+await semaphore.take();
+try {
+  // criticial section
+  // ...
+} catch (_) {
+  // handle errors
+} finally {
+  semaphore.give();
+}
+
+// or simply use the run()
+await semaphore.run(async () => {
+  // critical section
+});
 ```
 
 ### Initialize a Semaphore with a Custom Resource Limit
