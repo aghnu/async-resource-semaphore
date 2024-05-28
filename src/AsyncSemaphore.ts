@@ -1,45 +1,37 @@
+import {
+  SemaphoreDataMemeoryStorage,
+  type SemaphoreDataStorage,
+} from "./SemaphoreDataStorage.ts";
+
 export const DEFAULT_IDENTIFIER: string = "semaphore-default" as const;
 
 export class AsyncSemaphore {
-  private readonly limits = new Map<string, number>();
-  private readonly limitDefault: number;
+  private readonly semaphoreDataStorage: SemaphoreDataStorage;
 
-  constructor(maxResourceLimit = 1) {
-    this.limitDefault = maxResourceLimit;
-  }
-
-  private getLimit(identifier: string): number {
-    const limit = this.limits.get(identifier);
-    if (limit === undefined) {
-      this.limits.set(identifier, this.limitDefault);
-      return this.limitDefault;
-    }
-
-    return limit;
+  constructor(
+    storageOption: SemaphoreDataStorage = new SemaphoreDataMemeoryStorage(),
+  ) {
+    this.semaphoreDataStorage = storageOption;
   }
 
   private decreaseLimit(identifier: string): void {
-    const limit = this.limits.get(identifier);
-    if (limit === undefined) {
-      this.limits.set(identifier, this.limitDefault - 1);
-      return;
-    }
-    this.limits.set(identifier, limit - 1);
+    this.semaphoreDataStorage.setLimit(
+      identifier,
+      this.semaphoreDataStorage.getLimit(identifier) - 1,
+    );
   }
 
   private increaseLimit(identifier: string): void {
-    const limit = this.limits.get(identifier);
-    if (limit === undefined) {
-      this.limits.set(identifier, this.limitDefault);
-      return;
-    }
-    this.limits.set(identifier, Math.min(limit + 1, this.limitDefault));
+    this.semaphoreDataStorage.setLimit(
+      identifier,
+      this.semaphoreDataStorage.getLimit(identifier) + 1,
+    );
   }
 
   public async take(identifier = DEFAULT_IDENTIFIER): Promise<void> {
     await new Promise<void>((resolve) => {
       const checking = (): void => {
-        if (this.getLimit(identifier) > 0) {
+        if (this.semaphoreDataStorage.getLimit(identifier) > 0) {
           this.decreaseLimit(identifier);
           resolve();
           return;

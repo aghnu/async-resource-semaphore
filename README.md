@@ -41,10 +41,15 @@ This lightweight JavaScript library aims to resolve this issue by creating a cri
 
 ```typescript
 class Semaphore {
-  constructor(maxResourceLimit: number): Semaphore;
+  constructor(storageOption: SemaphoreDataStorage): Semaphore;
   run<T>: (criticalSection: () => Promise<T>, identifier?: string): Promise<T>;
   take: (identifier?: string): Promise<void>;
   give: (identifier?: string): void;
+}
+
+interface SemaphoreDataStorage {
+  getLimit: (identifier: string) => number;
+  setLimit: (identifier: string, limit: number) => void;
 }
 
 
@@ -55,9 +60,9 @@ class Semaphore {
 Default resource counter is set to 1. Only one logical chain of events can access the critical section.
 
 ```typescript
-import { AsyncSemaphore } from "async-resource-semaphore";
+import { AsyncSemaphore, SemaphoreDataMemeoryStorage } from "async-resource-semaphore";
 
-const semaphore = new AsyncSemaphore(); // defaut resource counter is 1
+const semaphore = new AsyncSemaphore(new SemaphoreDataMemeoryStorage()); // defaut resource counter is 1
 const criticalSection = async () => {
   // criticial section
   // ...
@@ -71,7 +76,7 @@ You can use semaphore's take and give
 ```typescript
 import { AsyncSemaphore } from "async-resource-semaphore";
 
-const semaphore = new AsyncSemaphore(); // defaut resource counter is 1
+const semaphore = new AsyncSemaphore(new SemaphoreDataMemeoryStorage()); // defaut resource counter is 1
 const criticalSection = async () => {
   await semaphore.take();
   // criticial section
@@ -110,7 +115,7 @@ await semaphore.run(async () => {
 ```typescript
 import { AsyncSemaphore } from "async-resource-semaphore";
 
-const semaphore = new AsyncSemaphore(2); // critical section can be accessed by at most two logical chain of events
+const semaphore = new AsyncSemaphore(new SemaphoreDataMemeoryStorage(2)); // critical section can be accessed by at most two logical chain of events
 const criticalSection = async () => {
   // criticial section
   // ...
@@ -124,7 +129,7 @@ void semaphore.run(criticalSection); // this event can excute right away
 ```typescript
 import { AsyncSemaphore } from "async-resource-semaphore";
 
-const semaphore = new AsyncSemaphore();
+const semaphore = new AsyncSemaphore(new SemaphoreDataMemeoryStorage());
 const res = await semaphore.run(async () => "response");
 ```
 
@@ -133,7 +138,7 @@ const res = await semaphore.run(async () => "response");
 ```typescript
 import { AsyncSemaphore } from "async-resource-semaphore";
 
-const semaphore = new AsyncSemaphore();
+const semaphore = new AsyncSemaphore(new SemaphoreDataMemeoryStorage());
 void semaphore.run(async () => await axios.post("/tickets", "tickets")); // A
 void semaphore.run(async () => await axios.post("/replies", "replies")); // B
 void semaphore.run(async () => await axios.post("/replies", "replies")); // C - this one will have to wait for B to exit
