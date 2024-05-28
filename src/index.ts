@@ -1,1 +1,1 @@
-export { AsyncSemaphore } from "./AsyncSemaphore.ts";
+export { AsyncSemaphore, semaphore } from "./AsyncSemaphore.ts";
